@@ -1,0 +1,37 @@
+<% include("top.html"){} %>
+
+
+
+<body class="withvernav">
+	<div class="bodywrapper">
+
+		<% include("head.html"){} %>
+		<% include("left.html"){} %>
+		<% include("right.html"){} %>
+</div>
+<!--bodywrapper-->
+
+<script>
+	jQuery(document).ready(function() {
+		jQuery('#mname').click(function() {
+			var url = jQuery(this).attr("url");
+			jQuery("#iframecon").attr("src", url);
+		});
+	});
+</script>
+<!--iframe自适应内容高度js-->
+<script type="text/javascript">
+	function iFrameHeight() {
+		var ifm = document.getElementById("iframecon");
+		var subWeb = document.frames ? document.frames["iframepage"].document
+				: ifm.contentDocument;
+		if (ifm != null && subWeb != null) {
+			ifm.height = subWeb.body.scrollHeight;
+		}
+	}
+	function loginPage() {
+		window.location.href='/admin/login/index';
+	}
+</script>
+</body>
+</html>

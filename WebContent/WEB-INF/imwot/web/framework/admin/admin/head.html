@@ -1,0 +1,48 @@
+
+<div class="topheader">
+	<div class="left">
+		<h1 class="logo">
+			JSTAR.<span>Admin</span>
+		</h1>
+		<span class="slogan">后台管理系统</span>
+
+		<br clear="all" />
+
+	</div>
+	<!--left-->
+
+	<div class="right">
+		<!--<div class="notification">
+                <a class="count" href="notifications.html"><span>9</span></a>
+        	</div>
+			-->
+		<div class="userinfo">
+			<img src="/assets/frame/images/thumbs/avatar.png" alt="" /> <span>${session.nickName}</span>
+		</div>
+		<!--userinfo-->
+
+		<div class="userinfodrop">
+			<div class="avatar">
+				<a href=""><img src="/assets/frame/images/thumbs/avatarbig.png" alt="" /></a>
+				<div class="changetheme">
+					Change theme: <br /> <a class="default"></a> <a class="blueline"></a> <a class="greenline"></a> <a class="contrast"></a> <a class="custombg"></a>
+				</div>
+			</div>
+			<!--avatar-->
+			<div class="userdata">
+				<h4>${session.nickName}</h4><br/>
+				<span class="email">${session.nickName}</span>
+				<ul>
+					<li><a href="#">Edit Profile</a></li>
+					<li><a href="#">Account Settings</a></li>
+					<li><a href="#">Help</a></li>
+					<li><a href="/admin/login/logout">Sign Out</a></li>
+				</ul>
+			</div>
+			<!--userdata-->
+		</div>
+		<!--userinfodrop-->
+	</div>
+	<!--right-->
+</div>
+<!--topheader-->

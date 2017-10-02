@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Basic DataGrid - jQuery EasyUI Demo</title>
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/demo/demo.css">
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript" src="/assets/frame/layer/layer.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/frame/layer/skin/layer.css">
+</head>
+
+<body style="padding:1px;">
+
+	<div id="toolbar" style="padding:5px;height:auto">
+		<div style="margin-bottom:5px">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="userList_del">删除</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="userList_add">添加</a>
+		</div>
+		<div>
+			Date From: <input class="easyui-datebox" type="text" style="width:90px" id="from" >
+			To: <input class="easyui-datebox" type="text" style="width:90px" id="to" >
+			STATUS: 
+			<input class="easyui-combobox" style="width:100px" url="/json/sStatus.json" valueField="key" textField="value" id="STATUS">
+			<span>USERNAME:</span> 
+			<input class="easyui-combobox" style="width:100px" url="/admin/user/users" valueField="key" textField="value" id="USERNAME" >
+			<a href="javascript:search();" class="easyui-linkbutton" iconCls="icon-search">Search</a>
+		</div>
+	</div>
+	
+	<table id="tt" class="easyui-datagrid" style="width: 100%; min-height: 550px" toolbar="#toolbar" title="${title!''}" iconCls="icon-save" rownumbers="true"
+		fitColumns="true" pagination="true" idField="ID" singleSelect="false" checkOnSelect="true">
+		<thead>
+			<tr>
+				<th field="ck" checkbox="true"></th>
+				<th field="ID" width="80" sortable="true">ID</th>
+				<th field="USERNAME" width="100" align="right">USERNAMEs</th>
+				<th field="NICKNAME" width="80" align="right">NICKNAME</th>
+				<th field="EMAIL" width="80" align="right">EMAIL</th>
+				<th field="STATUS" width="100" formatter="formatPrice">STATUS</th>
+				<th field="CREATE_TIME" width="150" align="center">CREATE_TIME</th>
+				<th field="ACTION" width="150" align="center" formatter="userList_action">action</th>
+			</tr>
+		</thead>
+	</table>
+
+<script type="text/javascript">
+	function search(){
+		var queryParams = $('#tt').datagrid('options').queryParams;
+        var STATUS=$('#STATUS').val();
+        var USERNAME=$('#USERNAME').val();
+        var from=$('#from').val();
+        var to=$('#to').val();
+        queryParams.STATUS =STATUS;
+        queryParams.USERNAME =USERNAME;
+        queryParams.from =from;
+        queryParams.to =to;
+        $('#tt').datagrid('reload');
+	}
+	
+	function hrefresh(){
+        $('#tt').datagrid('reload');
+	}
+	
+	$(function(){
+		$('#userList_add').on('click', function(){
+			layer.open({
+	           type: 2,  
+	           title: '用户添加',  
+	           maxmin: true,  
+	           skin: 'layui-layer-lan',  
+	           shadeClose: true, //点击遮罩关闭层  
+	           shade: false,
+	           area : ['500px' , '450px'],
+	           zIndex: parent.layer.zIndex, //重点1
+	           content:'/admin/user/userAddPage',//弹框显示的url  
+	           success: function(layero){
+	        	    layer.setTop(layero.parent); //重点2
+	        	}
+	    	});
+		});
+		
+		$('#userList_del').on('click', function(){
+			var selRow = $('#tt').datagrid("getSelections");
+			if(selRow.length==0){
+				layer.msg("请至少选择一条记录", 
+					{
+						icon: 2,
+						time: 1000 //1秒关闭（如果不配置，默认是3秒）
+					}
+				); 
+				return false;
+			}
+			var ids=[];
+			for (var i = 0; i < selRow.length; i++) {
+				var id=selRow[i].ID;
+				ids.push(id);
+			}
+			
+	        // 批量选择   
+	        layer.confirm('确定要删除所选项目?', function(index){
+	            $.ajax({
+	                type: "POST",
+	                url: "/admin/user/userDel",
+	                data: {'ids':ids},
+	                success: function(data) {
+	                	layer.msg("删除了"+data+"条", 
+    						{
+    							icon: 1,
+    							time: 1000
+    						}, 
+    						function(){
+    							if(data>0){
+    								window.location.reload();
+    							}else{
+    								
+    							}
+    						}
+    					);
+	                }
+	            });
+	        });
+		});
+	});
+</script>
+	
+<script type="text/javascript">
+	$(function(){
+		$('#tt').datagrid({
+			url:'/admin/user/getList',
+			onLoadSuccess:function(data){
+				window.parent.iFrameHeight();
+	        },
+	        rowStyler:function(index,row){
+				if (row.STATUS<1){
+					return 'background-color:pink;color:blue;font-weight:bold;';
+				}
+			}
+		});
+	});
+	function formatPrice(val,row){
+		if (val == 1){
+			val="启用";
+			return '<span style="color:blue;">'+val+'</span>';
+		} else {
+			val="停用";
+			return '<span style="color:red;">'+val+'</span>';
+		}
+	}
+	function userList_action(value,row,index){
+		var e = '<a href="#" onclick="userList_update('+row.ID+')">Edit</a> ';
+		return e;
+	}
+	function userList_update(id){
+		layer.open({
+           type: 2,  
+           title: '用户修改',  
+           maxmin: true,  
+           skin: 'layui-layer-lan',  
+           shadeClose: true, //点击遮罩关闭层  
+           shade: false,
+           area : ['500px' , '450px'],
+           content:'/admin/user/userUpdatePage?id='+id
+    	});
+	}
+</script>
+</body>
+</html>

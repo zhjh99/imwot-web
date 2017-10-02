@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Basic DataGrid - jQuery EasyUI Demo</title>
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/demo/demo.css">
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript" src="/assets/frame/layer/layer.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/frame/layer/skin/layer.css">
+</head>
+
+<body>
+
+	<div class="easyui-panel" title="用户信息" style="width:100%;max-width:400px;padding:30px 60px;">
+		<form id="ff" class="easyui-form" method="post" data-options="novalidate:true">
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="USERNAME" style="width:100%" data-options="label:'USERNAME:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="PASSWORD" style="width:100%" data-options="label:'PASSWORD:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="NICKNAME" style="width:100%" data-options="label:'NICKNAME:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="EMAIL" style="width:100%" data-options="label:'EMAIL:',required:true,validType:'email'">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-combobox" name="STATUS" style="width:100%" url="/json/uStatus.json" valueField="key" textField="value" value="1" id="STATUS" data-options="label:'STATUS:'">
+			</div>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">Submit</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px">Clear</a>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var index = parent.layer.getFrameIndex(window.name);
+		function submitForm(){
+			$('#ff').form('submit',{
+				url: '/admin/user/userUpdate',
+				onSubmit:function(){
+					return $(this).form('enableValidation').form('validate');
+				},
+				success: function(data){
+					var title="保存失败";
+					var iconType=2;
+					if(data>0){
+						title="保存成功";
+						iconType=1;
+					}
+					layer.msg(title, 
+						{
+							icon: iconType,
+							time: 1000 //1秒关闭（如果不配置，默认是3秒）
+						}, 
+						function(){
+							if(data>0){
+								parent.location.reload();
+								//parent.layer.close(index);
+							}else{
+								
+							}
+						}
+					); 
+				}
+			});
+		}
+		function clearForm(){
+			$('#ff').form('clear');
+		}
+	</script>
+</body>
+</html>

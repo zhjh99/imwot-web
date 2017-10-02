@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Basic DataGrid - jQuery EasyUI Demo</title>
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/demo/demo.css">
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript" src="/assets/frame/layer/layer.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/frame/layer/skin/layer.css">
+</head>
+
+<body>
+
+	<div class="easyui-panel" title="权限信息" style="width:100%;max-width:400px;padding:30px 60px;">
+		<form id="ff" class="easyui-form" method="post" data-options="novalidate:true">
+		 	<input type="hidden" name="ID" value="${list[0].ID!''}">
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="NAME" value="${list[0].NAME!''}" style="width:100%" data-options="label:'NAME:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="TITLE" value="${list[0].TITLE!''}" style="width:100%" data-options="label:'TITLE:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="PATH" value="${list[0].PATH!''}" style="width:100%" data-options="label:'PATH:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input class="easyui-textbox" name="SORTVALUE" value="${list[0].SORTVALUE!''}" style="width:100%" data-options="label:'SORTVALUE:',required:true">
+			</div>
+			<div style="margin-bottom:20px">
+				<input id="PID" name="PID" value="${list[0].PID!''}" style="width:100%">
+			</div>
+		</form>
+		<div style="text-align:center;padding:5px 0">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">Submit</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px">Clear</a>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var index = parent.layer.getFrameIndex(window.name);
+		function submitForm(){
+			$('#ff').form('submit',{
+				url: '/admin/authorization/update',
+				onSubmit:function(){
+					return $(this).form('enableValidation').form('validate');
+				},
+				success: function(data){
+					var title="保存失败";
+					var iconType=2;
+					if(data>0){
+						title="保存成功";
+						iconType=1;
+					}
+					layer.msg(title, 
+						{
+							icon: iconType,
+							time: 1000 //1秒关闭（如果不配置，默认是3秒）
+						}, 
+						function(){
+							if(data>0){
+								parent.location.reload();
+								//parent.layer.close(index);
+							}else{
+								
+							}
+						}
+					); 
+				}
+			});
+		}
+		$('#PID').combotree({
+		    url: '/admin/authorization/authData?id=${id!''}',
+		    label:'PID:',
+		    required: true
+		});
+	</script>
+</body>
+</html>

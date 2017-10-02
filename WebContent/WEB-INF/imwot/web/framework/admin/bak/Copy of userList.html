@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>网页插件页面</title>
+<link rel="stylesheet" href="/assets/frame/css/style.default.css" type="text/css" />
+<script type="text/javascript" src="/assets/frame/js/plugins/jquery-1.7.min.js"></script>
+<!--[if IE 9]>
+    <link rel="stylesheet" media="screen" href="css/style.ie9.css"/>
+<![endif]-->
+<!--[if IE 8]>
+    <link rel="stylesheet" media="screen" href="css/style.ie8.css"/>
+<![endif]-->
+<!--[if lt IE 9]>
+	<script src="/assets/frame/css/plugins/css3-mediaqueries.js"></script>
+<![endif]-->
+</head>
+
+<body class="">
+
+		<!-- 
+		<div class="pageheader notab">
+			<h1 class="pagetitle">Tables</h1>
+			<span class="pagedesc">This is a sample description of a page</span>
+
+		</div> -->
+		<!--pageheader-->
+		<form name="fframeform" method="post" action="/admin/user/userList">
+		<div id="contentwrapper" class="contentwrapper">
+			<div class="contenttitle2">
+				<h3>Dynamic Table with Checkbox Column</h3>
+			</div>
+			<div class="tableoptions">
+				<button type="button" class="deletebutton radius3" title="table2" onclick="del()">Delete Selected</button>
+				&nbsp; <select class="radius3">
+					<option value="">Show All</option>
+					<option value="">Rendering Engine</option>
+					<option value="">Platform</option>
+				</select> &nbsp;
+				<button type="button" class="radius3" onclick="addPage()">add</button>
+			</div>
+			<!--tableoptions-->
+			<!--contenttitle-->
+			<table cellpadding="0" cellspacing="0" border="0" class="stdtable" id="dyntable2">
+				<colgroup>
+					<col class="con0" style="width: 3%" />
+					<col class="con1" />
+					<col class="con0" />
+					<col class="con1" />
+					<col class="con0" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="head0 nosort"><input type="checkbox" class="checkboxall" /></th>
+						<th class="head0">USERNAME</th>
+						<th class="head1">NICKNAME</th>
+						<th class="head0">STATUS</th>
+						<th class="head1">CREATE_TIME</th>
+						<th class="head0">ACTION</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th class="head0"><span class="center"> <input type="checkbox" class="checkboxall"/>
+						</span></th>
+						<th class="head0">USERNAME</th>
+						<th class="head1">NICKNAME</th>
+						<th class="head0">STATUS</th>
+						<th class="head1">CREATE_TIME</th>
+						<th class="head0">ACTION</th>
+					</tr>
+				</tfoot>
+				<tbody>
+
+					<% for(user in list){ 
+						print("<tr>"); 
+						print("<td align='center'><span class='center'> <input type='checkbox' name='userId' value='"+user.ID+"'/>");
+						print("<td>"+user.USERNAME+"</td>"); 
+						print("<td>"+user.NICKNAME+"</td>");
+						var status=user.STATUS==1?"启用":"停用";
+						print("<td>"+status+"</td>");
+						print("<td>"+user.CREATE_TIME+"</td>"); 
+						print("<td class='center'><a href='' class='edit'>Edit</a> &nbsp; <a href='javascript:del("+user.ID+")' class='delete' >Delete</a></td>");
+						print("</span></tr>"); 
+					} 
+					%>
+				</tbody>
+			</table>
+
+
+
+			<div class="dataTables_paginate paging_full_numbers" id="dyntable2_paginate">${fy}</div>
+		
+			<input type="hidden" name="ZYMC" value="ZXYHCX" /> <input type="hidden" name="QUERYCONDITION" value="" /> <input type="hidden" name="PAGENOW" value="1" /> <input
+				type="hidden" name="PAGESIZE" value="3" /> <input type="hidden" name="ORDERBY" value="" />
+		</form>
+
+		<script type="text/javascript">
+			function fy(pageIndex) {
+				document.forms[0].target = "_self";
+				//document.forms[0].QUERYCONDITION.value = "";
+				//document.forms[0].ORDERBY.value = "";
+				document.forms[0].PAGENOW.value = pageIndex;
+				//document.forms[0].PAGESIZE.value = "";
+				document.forms[0].submit();
+			}
+			function del() {
+				if(confirm("确定删除该权限?")){
+					document.forms[0].action = '/admin/user/userDel';	　　
+					document.forms[0].submit();
+				}
+			}
+			
+			function del(id) {
+				if(confirm("确定删除该权限?")){
+					var ids="tbody :checkbox[value='"+id+"']";
+					jQuery(ids).prop("checked", true);
+					document.forms[0].action = '/admin/user/userDel';	
+					document.forms[0].submit();
+				}
+			}
+			function addPage() {
+				window.location.href='/admin/user/userAddPage';
+			}
+			jQuery(document).ready(function() {
+				jQuery(".checkboxall").click(function() {
+					if (this.checked) {
+						jQuery("tbody :checkbox").prop("checked", true);
+					} else {
+						jQuery("tbody :checkbox").prop("checked", false);
+					}
+				});
+			});
+		</script>
+</body>
+</html>

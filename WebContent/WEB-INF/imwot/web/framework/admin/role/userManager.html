@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Basic DataGrid - jQuery EasyUI Demo</title>
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="/assets/jquery-easyui-1.5.2/demo/demo.css">
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/assets/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript" src="/assets/frame/layer/layer.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/frame/layer/skin/layer.css">
+</head>
+
+<body style="padding:1px;">
+
+	<input type="hidden" value="${role_id!''}">
+
+	<div id="toolbar" style="padding:5px;height:auto">
+		<div style="margin-bottom:5px">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" id="del">保存</a>
+		</div>
+	</div>
+	
+	<table id="tt" class="easyui-datagrid" style="width: 100%; min-height: 550px" toolbar="#toolbar" title="${title!''}" iconCls="icon-save" rownumbers="true"
+		fitColumns="true" pagination="false" idField="ID" singleSelect="false" checkOnSelect="true">
+		<thead>
+			<tr>
+				<th field="ck" checkbox="true"></th>
+				<th field="NICKNAME" width="100" align="left">NICKNAME</th>
+			</tr>
+		</thead>
+	</table>
+
+<script type="text/javascript">
+	$(function(){
+		$('#del').on('click', function(){
+			var ids=[];
+			
+			//获取所有行的数据
+			var rows = $("#tt").datagrid('getRows');
+			$("input[name='ck']").each(function (i) {
+			  //如果是选中状态就进入操作
+			  if($(this).is(':checked')){
+				  var id=rows[i].ID;
+				  ids.push(id);
+			  }
+			});
+			
+	        // 批量选择   
+	        layer.confirm('确定要授权所选用户?', function(index){
+	            $.ajax({
+	                type: "POST",
+	                url: "/admin/role/authorize",
+	                data: {'ids':ids,"ROLE_ID":${role_id!''}},
+	                success: function(data) {
+	                	layer.msg("授权了"+data+"个用户", 
+    						{
+    							icon: 1,
+    							time: 1000
+    						}, 
+    						function(){
+    							if(data>0){
+    								window.location.reload();
+    							}else{
+    								
+    							}
+    						}
+    					);
+	                }
+	            });
+	        });
+		});
+	});
+</script>
+	
+<script type="text/javascript">
+	$(function(){
+		$('#tt').datagrid({
+			url:'/admin/role/users?role_id=${role_id!''}',
+			onLoadSuccess:function(data){
+				if(data){
+					$.each(data.rows, function(index, item){
+						if(item.checked){
+							$('#tt').datagrid('checkRow', index);
+						}
+					});
+				}
+	        },
+	        rowStyler:function(index,row){
+				if (row.STATUS<1){
+					return 'background-color:pink;color:blue;font-weight:bold;';
+				}
+			}
+		});
+	});
+</script>
+</body>
+</html>

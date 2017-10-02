@@ -1,0 +1,29 @@
+		<div class="vernav2 iconmenu" style="background: url(/assets/frame/images/default/noise.white.png);height: 552px;">
+			<ul>
+				<% for(first in firstList){
+						var id=first.ID+"";
+						var current="";
+						if(firstLP.first){
+							current="class='current'";
+						}
+						print("<li "+current+"><a href='#"+first.NAME+"' class='"+first.NAME+"'>"+first.TITLE+"</a> <span class='arrow'></span>");
+						print("<ul id='"+first.NAME+"'>");
+						for(second in secondMap){
+							var key = second.key;
+        					var secondList = second.value;
+							if(id==key){
+								for(entry in secondList){
+									print("<li><a href='"+entry.PATH+"' target='iframepage' class='menucoll'>"+entry.TITLE+"</a></li>");
+								}
+								
+							}
+						}
+						print("</ul>");
+						print("</li>");
+					} 
+				%>
+
+			</ul>
+			<a class="togglemenu"></a> <br /> <br />
+		</div>
+		<!--leftmenu-->
