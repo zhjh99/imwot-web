@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.imwot.web.framework.core.annotation.AController;
 import com.imwot.web.framework.core.modle.DataModle;
+import com.imwot.web.framework.frame.METHOD;
 
 /**
  * 〈一句话功能简述〉
@@ -61,7 +62,7 @@ public abstract class AbstractController extends AbstractSql implements IControl
 					method.invoke(this, modle);
 					result = 1;
 				} else {
-					modle.setUrl("famework/admin/forbidden.html");
+					modle.setUrl("imwot/web/framework/admin/forbidden.html");
 					result = -2;
 				}
 			}
@@ -75,7 +76,8 @@ public abstract class AbstractController extends AbstractSql implements IControl
 		boolean isIllegal = false;
 		if (!("login".equals(modle.getClazz().getClazzName())) && !("admin".equals(modle.getClazz().getClazzName()) && "index".equals(modle.getClazz().getMethod()))) {
 			if (StringUtils.isBlank((String) modle.getSession("userName"))) {
-				modle.setUrl("famework/admin/reloadParent.html");
+				// modle.setUrl("famework/admin/reloadParent.html");
+				modle.setUrl("imwot/web/framework/admin/reloadParent.html");
 				isIllegal = true;
 			}
 		}
