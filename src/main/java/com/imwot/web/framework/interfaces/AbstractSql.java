@@ -50,6 +50,7 @@ public abstract class AbstractSql extends AbstractLog {
 	protected AbstractSqlOperator mysql1;
 
 	public AbstractSql() {
+		gson = new Gson();
 		mysql1 = DBContext.getDbInstance().getDbOperator("mysql1");
 	}
 }
